@@ -10,6 +10,18 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const http = require('http');
 const expressValidator = require('express-validator');
+const mongoose = require('mongoose');
+const passport = require('passport');
+const flash = require('express-flash-messages');
+const User = require('./models/user');
+
+
+// const User = models.User;
+const LocalStrategy = require('passport-local').Strategy;
+const mongoURL = 'mongodb://localhost:27017/test';
+mongoose.connect(mongoURL, {useMongoClient: true});
+mongoose.Promise = require('bluebird');
+const MongoClient = require('mongodb').MongoClient;
 // const validation = require('./test/validation/checkVal.js');
 
 const routes = require('./routes.js');
@@ -53,6 +65,14 @@ app.use(session({
   saveUninitialized: true,
   cookie: {}
 }));
+
+const getUserInfo = function(req, res, next) {
+    User.findOne({_id: req.params.id}, req.body).then(function(users) {
+        req.users = users;
+        console.log(req.users);
+        next();
+    })
+};
 
 app.use(routes);
 

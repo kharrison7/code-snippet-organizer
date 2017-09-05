@@ -10,16 +10,21 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.5.0",
     "body-parser": "^1.17.2",
     "cookie-parser": "^1.4.3",
     "express": "^4.15.4",
+    "express-flash-messages": "^0.1.1",
     "express-session": "^1.15.5",
     "express-validation": "^1.0.2",
     "express-validator": "^4.1.1",
     "http": "0.0.0",
     "jsonfile": "^3.0.1",
+    "mongoose": "^4.11.10",
     "morgan": "^1.8.2",
     "mustache-express": "^1.2.5",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "path": "^0.12.7"
   }
 }
