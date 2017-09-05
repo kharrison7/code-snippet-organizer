@@ -31,4 +31,23 @@ router.post('/',function(req,res){
   res.redirect('/');
 });
 
+router.get('/login',function(req,res){
+  console.log("index for user");
+  res.render('login');
+});
+
+router.post('/login',function(req,res){
+  res.redirect('/login');
+});
+
+router.get('/register',function(req,res){
+  console.log("register for user");
+  res.render('register');
+});
+
+router.post('/register',function(req,res){
+  res.redirect('/register');
+});
+
+
 module.exports = router;

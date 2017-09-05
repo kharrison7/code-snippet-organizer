@@ -1,7 +1,8 @@
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
+const bcrypt = require('bcryptjs');
 
-let userSchema = new Schema({
+const userSchema = new Schema({
  title:  {type: String, required: true, unique: true},
  author: String,
  price: Number,

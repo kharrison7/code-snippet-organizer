@@ -1,0 +1,26 @@
+.completed {
+  /*float: right;*/
+  margin-top: 10pt;
+  margin-left: 5pt;
+}
+p {
+  color: #21618C;
+}
+form {
+  border: 1pt solid #D4E6F1;
+}
+.holder {
+  display: block;
+  border: 1pt solid #D4E6F1;
+  height: 40pt;
+}
+.leftMove {
+ float: left;
+}
+.strike{
+    color: #EB984E;
+    text-decoration: line-through;
+}
+.capital{
+  color: red;
+}

@@ -6,17 +6,27 @@
   <link rel="stylesheet" type="text/css" href="/stylesheets/styles.css" />
 </head>
 <body>
+<div class="nav">
+  {{#user}}
+    <div>
+      <p>You are logged in as: <em>{{ username }}</em></p>
+    </div>
+    <div>
+      <p><a href="/logout/">Logout</a></p>
+    </div>
+  {{/user}}
+</div>
+<div class="nav">
+  {{^user}}
+  <div>
+    <p><a href="/login/">Login</a></div>
+  <div>
+    <p><a href="/register/">Register</a></p>
+  </div>
+  {{/user}}
+</div>
   <form action="/" method="post">
     <p>Code Snippet Page.</p>
-    <br>
-    <label for="difficulty">Label</label>
-    <select name="difficulty" id="">
-       <option value="easy">Easy</option>
-       <option value="normal">Normal</option>
-       <option value="hard">Hard</option>
-       <option value="hardcore">Competitive</option>
-    </select>
-    <br>
     <button type="submit">Submit</button>
   </form>
   <br>
