@@ -17,9 +17,8 @@ const passport = require('passport');
 const flash = require('express-flash-messages');
 const List = require('./models/user');
 const bcrypt = require('bcryptjs');
-
-const Snippet = List.Snippet;
-const User = List.User;
+const models = require("./models/user")
+const User = models.User;
 
 // const User = models.User;
 const LocalStrategy = require('passport-local').Strategy;
@@ -82,6 +81,49 @@ const getUserInfo = function(req, res, next) {
         next();
     })
 };
+
+
+passport.use(new LocalStrategy(
+    function(username, password, done) {
+        User.authenticate(username, password, function(err, user) {
+          //HERE, USER is the entire user object
+            if (err) {
+                return done(err)
+            }
+            if (user) {
+                return done(null, user)
+            } else {
+                return done(null, false, {
+                    message: "There is no user with that username and password."
+                })
+            }
+        })
+    }
+));
+passport.serializeUser(function(userobj, done) {
+  //HERE, USER is the entire user object
+    done(null, userobj.id);//Returns the randomized ID, sends to deserializeUser
+});
+passport.deserializeUser(function(id, done) {
+  //Gets the ID from the serializeUser
+    User.findById(id, function(err, userobj) {
+      //finds that user object by its ID
+        done(err, userobj);//FIND OUT WHERE THIS RETURNS TO
+    });
+});
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+app.use(function (req, res, next) {
+  res.locals.user = req.user;
+  next();
+})
+
+
+
+
+
+
 
 app.use(routes);
 

@@ -23,6 +23,8 @@ const bcrypt = require('bcryptjs');
 // This pulls from the models.
 const models = require("./models/user");
 const User = models.User;
+// let User = require('./models/user');
+
 // const User = require('./models/user');
 
 // const User = models.User;
@@ -68,33 +70,53 @@ const checkLogin = function (req, res, next) {
 
 // These are the passport checks
 // For Login: gets username, matches username and validates pw.
+// passport.use(new LocalStrategy(
+//   function(username, password, done) {
+//   User.getUserByUserName(username, function(err, user){
+//     if(err) throw err;
+//     if(!user){
+//       return done(null, false, {message: 'Unknown User'});
+//     }
+//     User.comparePassword(password, user.password, function(err, isMatch){
+//       if(err) throw err;
+//       if(isMatch){
+//         return done(null, User);
+//       }
+//       else{
+//         return done(null, false, {message: 'Invalid password'});
+//       }
+//     });
+//   });
+// }));
+
 passport.use(new LocalStrategy(
-  function(username, password, done) {
-  User.getUserByUserName(username, function(err, user){
-    if(err) throw err;
-    if(!user){
-      return done(null, false, {message: 'Unknown User'});
+    function(username, password, done) {
+        User.authenticate(username, password, function(err, user) {
+          //HERE, USER is the entire user object
+            if (err) {
+                return done(err)
+            }
+            if (user) {
+                return done(null, user)
+            } else {
+                return done(null, false, {
+                    message: "There is no user with that username and password."
+                })
+            }
+        })
     }
-    User.comparePassword(password, user.password, function(err, isMatch){
-      if(err) throw err;
-      if(isMatch){
-        return done(null, User);
-      }
-      else{
-        return done(null, false, {message: 'Invalid password'});
-      }
-    });
-  });
-}));
+));
 
-passport.serializeUser(function(user, done) {
-  done(null, user.id);
+passport.serializeUser(function(userobj, done) {
+  //HERE, USER is the entire user object
+    done(null, userobj.id);//Returns the randomized ID, sends to deserializeUser
 });
-
 passport.deserializeUser(function(id, done) {
-  User.getUserById(id, function(err, user) {
-    done(err, user);
-  });
+  //Gets the ID from the serializeUser
+    User.findById(id, function(err, userobj) {
+      //finds that user object by its ID
+        done(err, userobj);//FIND OUT WHERE THIS RETURNS TO
+    });
 });
 
 app.use(passport.initialize());
