@@ -10,11 +10,16 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const http = require('http');
 const expressValidator = require('express-validator');
+const mongodb = require('mongodb');
 const mongoose = require('mongoose');
 const passport = require('passport');
+//FLASH MESSAGES ALLOWS YOU TO USE res.locals.getMessages(), AND STORE THEM IN messages
 const flash = require('express-flash-messages');
-const User = require('./models/user');
+const List = require('./models/user');
+const bcrypt = require('bcryptjs');
 
+const Snippet = List.Snippet;
+const User = List.User;
 
 // const User = models.User;
 const LocalStrategy = require('passport-local').Strategy;
@@ -63,7 +68,7 @@ app.use(session({
   resave: false,
   // set to determine save to sessions.
   saveUninitialized: true,
-  cookie: {}
+  cookie: {maxAge: 1000000, httpOnly: false}
 }));
 
 const getUserInfo = function(req, res, next) {

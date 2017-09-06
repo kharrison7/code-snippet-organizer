@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Code Snippet Page</title>
+  <link rel="stylesheet" type="text/css" href="stylesheets/styles.css" />
+  <link rel="stylesheet" type="text/css" href="/stylesheets/styles.css" />
+</head>
+<body>
+<div class="nav">
+  {{#user}}
+    <div>
+      <p>You are logged in as: <em>{{ username }}</em></p>
+      <p>Password: {{ password }}</p>
+      <p>Email: {{email}}</p>
+    </div>
+    <div>
+      <p><a href="/logout/">Logout</a></p>
+    </div>
+  {{/user}}
+</div>
+  <br>
+  <p>This site holds and sorts code snippets for the user.</p>
+  <form action="/" method="post" name="mySubmitForm">
+    <button type="submit">Home Page</button>
+  </form>
+  <script type="text/javascript" src="main.js"></script>
+</body>
