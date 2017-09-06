@@ -23,6 +23,9 @@ const bcrypt = require('bcryptjs');
 // This pulls from the models.
 const models = require("./models/user");
 const User = models.User;
+const modelsSnip = require("./models/snippet");
+const snippet = modelsSnip.snippet;
+
 // let User = require('./models/user');
 
 // const User = require('./models/user');
