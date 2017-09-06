@@ -7,29 +7,25 @@ const snippetSchema = new Schema({
         type: String,
         required: true
     },
-    codesnippet: {
+    code: {
         type: String,
         required: true
     },
     notes: {
         type: String
     },
-    language: {
+    lang: {
         type: String,
         required: true
     },
     privacy: {
         type: String,
-        required: true
+        default: true
     },
     tags: {
         type: Array
     },
     user: {
-        type: String,
-        required: true
-    },
-    authorname: {
         type: String,
         required: true
     }

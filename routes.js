@@ -24,7 +24,7 @@ const bcrypt = require('bcryptjs');
 const models = require("./models/user");
 const User = models.User;
 const modelsSnip = require("./models/snippet");
-const snippet = modelsSnip.snippet;
+const Snippet = modelsSnip.Snippet;
 
 // let User = require('./models/user');
 
@@ -216,14 +216,33 @@ router.post('/logout_submit', function(req, res) {
   res.redirect('/');
 });
 
-
-
-
-
 router.get('/signup/', loginRedirect,  function(req, res) {
   res.render('signup');
 });
 
+router.get('/addsnippet/', function(req, res) {
+  console.log("add snippet page");
+  User.find().then(function (user){
+    res.render('addsnippet', {user: user});
+  });
+});
+
+router.post('/add/', function(req, res) {
+  console.log(req.body);
+  console.log(req.user);
+  // Snippet.create(req.body).then(function (snippet){
+  //   res.redirect('/');
+  // });
+  Snippet.create({
+    title: req.body.title,
+    code: req.body.codeBody,
+    notes: req.body.notes,
+    lang: req.body.lang,
+    tags: req.body.tags,
+    user: req.session.username
+  });
+  res.redirect('/');
+});
 
 
 module.exports = router;

@@ -19,6 +19,8 @@ const List = require('./models/user');
 const bcrypt = require('bcryptjs');
 const models = require("./models/user")
 const User = models.User;
+const modelsSnip = require("./models/snippet");
+const Snippet = modelsSnip.snippet;
 
 // const User = models.User;
 const LocalStrategy = require('passport-local').Strategy;
