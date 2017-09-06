@@ -199,6 +199,20 @@ router.post('/login_submit',
     res.redirect('/');
   });
 
+router.get('/logout/', function(req, res) {
+  console.log("logout page");
+  User.find().then(function (user){
+    res.render('logout', {user: user});
+  });
+});
+
+router.post('/logout_submit', function(req, res) {
+  console.log("Loged Out");
+  req.logout();
+  req.session.destroy();
+  res.redirect('/');
+});
+
 
 
 

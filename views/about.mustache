@@ -8,13 +8,13 @@
 <body>
 <div class="nav">
   {{#user}}
+  <h2>User List</h2>
+  {{/user}}
+  {{#user}}
     <div>
       <p>UserName: <em>{{ username }}</em></p>
       <p>Password Hash: {{ passwordHash }}</p>
       <p>Email: {{email}}</p>
-    </div>
-    <div>
-      <p><a href="/logout/">Logout</a></p>
     </div>
   {{/user}}
 </div>

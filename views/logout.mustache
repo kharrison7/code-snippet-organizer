@@ -11,27 +11,11 @@
     <div>
       <p>You are logged in as: <em>{{ username }}</em></p>
     </div>
-    <div>
-      <a href="/logout/">Logout</a>
-    </div>
   {{/user}}
 </div>
-<div class="nav">
-  {{^user}}
-  <div>
-    <p><a href="/login/">Login</a></div>
-  <div>
-    <p><a href="/register/">Register</a></p>
-  </div>
-  {{/user}}
-</div>
-  <form action="/" method="post">
-    <p>Code Snippet Page.</p>
+  <form action="/logout_submit" method="post">
+    <p>Click Below to Log Out.</p>
     <button type="submit">Submit</button>
-  </form>
-  <br>
-  <form action="/about" method="post" name="mySubmitForm">
-    <button type="submit">About</button>
   </form>
   <script type="text/javascript" src="main.js"></script>
 </body>
