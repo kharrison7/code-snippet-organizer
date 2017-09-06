@@ -61,6 +61,10 @@ app.set('view engine', 'mustache');
 // fetch static content from public folder, example css.
 app.use(express.static(__dirname + '/public'));
 
+// This uses flash messages.
+app.use(flash());
+
+
 // This sets up the session.
 app.use(session({
   secret: 'variant',

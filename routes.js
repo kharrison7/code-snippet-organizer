@@ -21,9 +21,9 @@ const flash = require('express-flash-messages');
 const bcrypt = require('bcryptjs');
 
 // This pulls from the models.
-// const models = require("./models/user");
-// const User = models.User;
-const User = require('./models/user');
+const models = require("./models/user");
+const User = models.User;
+// const User = require('./models/user');
 
 // const User = models.User;
 const LocalStrategy = require('passport-local').Strategy;
@@ -67,34 +67,36 @@ const checkLogin = function (req, res, next) {
 }
 
 // These are the passport checks
+// For Login: gets username, matches username and validates pw.
 passport.use(new LocalStrategy(
-    function(username, password, done) {
-        User.authenticate(username, password, function(err, user) {
-          //HERE, USER is the entire user object
-            if (err) {
-                return done(err)
-            }
-            if (user) {
-                return done(null, user)
-            } else {
-                return done(null, false, {
-                    message: "There is no user with that username and password."
-                })
-            }
-        })
+  function(username, password, done) {
+  User.getUserByUserName(username, function(err, user){
+    if(err) throw err;
+    if(!user){
+      return done(null, false, {message: 'Unknown User'});
     }
-));
-passport.serializeUser(function(userobj, done) {
-  //HERE, USER is the entire user object
-    done(null, userobj.id);//Returns the randomized ID, sends to deserializeUser
-});
-passport.deserializeUser(function(id, done) {
-  //Gets the ID from the serializeUser
-    User.findById(id, function(err, userobj) {
-      //finds that user object by its ID
-        done(err, userobj);//FIND OUT WHERE THIS RETURNS TO
+    User.comparePassword(password, user.password, function(err, isMatch){
+      if(err) throw err;
+      if(isMatch){
+        return done(null, User);
+      }
+      else{
+        return done(null, false, {message: 'Invalid password'});
+      }
     });
+  });
+}));
+
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
 });
+
+passport.deserializeUser(function(id, done) {
+  User.getUserById(id, function(err, user) {
+    done(err, user);
+  });
+});
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -146,16 +148,38 @@ router.post('/about',function(req,res){
 // This runs when the user registers.
 router.post('/submit_registration/',function(req,res){
   console.log("submit_registration");
+  // Validation:
+    req.checkBody('username', 'Username must be alphanumeric').isAlphanumeric();
+    req.checkBody('username', 'Username is required').notEmpty();
+    req.checkBody('password', 'Password is required').notEmpty();
+    req.checkBody('password2', 'Type Password Again').notEmpty();
+    req.checkBody('email', 'Email is required').notEmpty();
+    req.checkBody('email', 'Invalid Email').isEmail();
+    req.checkBody('password', 'Passwords do not match').equals(req.body.password2);
   console.log(req.body);
+  // Adds user to database.
   User.create(req.body).then(function (user){
-    res.redirect('/');
+    // req.flash("success_msg", "You are registered");
+    res.redirect('/login');
   });
 });
 
-  router.post('/login_submit',function(req,res,next){
-    console.log("login_submit");
 
-});
+
+router.post('/login_submit',
+  passport.authenticate('local', {successRedirect:'/', failureRedirect:'/users/login',failureFlash: true}),
+  function(req, res) {
+        req.session.username = req.body.username;
+        req.session.password = req.body.password;
+        req.session.email = req.body.email;
+        console.log("new session info added");
+        console.log("Session username: "+ req.session.username);
+    res.redirect('/');
+  });
+
+
+
+
 
 router.get('/signup/', loginRedirect,  function(req, res) {
   res.render('signup');
