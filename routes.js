@@ -273,6 +273,7 @@ router.post('/usersnippet/', function(req, res) {
 
 router.get('/:id/snippet/', function(req, res) {
   console.log("Specific snippet for user with id: " +req.params.id);
+  req.session.snippetid = req.params.id;
   console.log("User: " + req.user.username);
   Snippet.findOne({user: req.user.username, _id: req.params.id}).then(function(snippet) {
     res.render('snippet', {snippet: snippet});
@@ -291,9 +292,20 @@ router.post('/searchLang/', function(req, res) {
 });
 
 router.post('/searchTag/', function(req, res) {
-  console.log("tag: " + req.body.tag);
+  console.log("tag(s) in body: " + req.body);
   Snippet.find({user: req.user.username, tags: [req.body.tag]}).then(function(snippet) {
     res.render('usersnippet', {snippet: snippet});
+  });
+});
+
+router.post('/addTag/', function(req, res) {
+  console.log("tag: " + req.body.tag);
+  console.log("Specific snippet for user with id: "+req.session.snippetid);
+  Snippet.findOne({user: req.user.username, _id: req.session.snippetid}).then(function(snippet) {
+    snippet.tags.push(req.body.tag);
+    snippet.save().then(function () {
+      res.redirect('/usersnippet/');
+   });
   });
 });
 
