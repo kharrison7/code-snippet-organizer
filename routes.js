@@ -25,9 +25,7 @@ const models = require("./models/user");
 const User = models.User;
 const modelsSnippet = require("./models/snippet");
 const Snippet = modelsSnippet.Snippet;
-
 // let User = require('./models/user');
-
 // const User = require('./models/user');
 
 // const User = models.User;
@@ -39,9 +37,6 @@ mongoose.connect(mongoURL, {
 mongoose.Promise = require('bluebird');
 const MongoClient = require('mongodb').MongoClient;
 // const validation = require('./test/validation/checkVal.js');
-
-
-
 
 // middleware
 router.use(function(req, res, next) {
@@ -74,26 +69,6 @@ const checkLogin = function(req, res, next) {
 }
 
 // These are the passport checks
-// For Login: gets username, matches username and validates pw.
-// passport.use(new LocalStrategy(
-//   function(username, password, done) {
-//   User.getUserByUserName(username, function(err, user){
-//     if(err) throw err;
-//     if(!user){
-//       return done(null, false, {message: 'Unknown User'});
-//     }
-//     User.comparePassword(password, user.password, function(err, isMatch){
-//       if(err) throw err;
-//       if(isMatch){
-//         return done(null, User);
-//       }
-//       else{
-//         return done(null, false, {message: 'Invalid password'});
-//       }
-//     });
-//   });
-// }));
-
 passport.use(new LocalStrategy(
   function(username, password, done) {
     User.authenticate(username, password, function(err, user) {
@@ -131,7 +106,6 @@ app.use(function(req, res, next) {
   res.locals.user = req.user;
   next();
 })
-
 
 // GETS and POSTS:
 router.get('/', function(req, res) {
@@ -190,8 +164,6 @@ router.post('/submit_registration/', function(req, res) {
     res.redirect('/login');
   });
 });
-
-
 
 router.post('/login_submit',
   passport.authenticate('local', {
@@ -292,8 +264,8 @@ router.post('/searchLang/', function(req, res) {
 });
 
 router.post('/searchTag/', function(req, res) {
-  console.log("tag(s) in body: " + req.body);
-  Snippet.find({user: req.user.username, tags: [req.body.tag]}).then(function(snippet) {
+  console.log("tag(s) in body: " + req.body.tag);
+  Snippet.find({user: req.user.username, tags: req.body.tag}).then(function(snippet) {
     res.render('usersnippet', {snippet: snippet});
   });
 });
@@ -308,8 +280,5 @@ router.post('/addTag/', function(req, res) {
    });
   });
 });
-
-
-
 
 module.exports = router;
