@@ -7,16 +7,16 @@
 </head>
 <body>
 <div class="nav">
-  {{#user}}
+  {{#user.length}}
   <h2>User List</h2>
-  {{/user}}
+  <hr />
+  {{/user.length}}
   {{#user}}
     <div>
       <p>UserName: <em>{{ username }}</em></p>
       <p>Password Hash: {{ passwordHash }}</p>
       <p>Email: {{email}}</p>
-      {{#snippet}}
-      {{/snippet}}
+      <hr />
     </div>
   {{/user}}
 </div>
