@@ -210,6 +210,7 @@ router.post('/login_submit',
 
 router.get('/logout/', function(req, res) {
   console.log("logout page");
+  console.log("User: " + req.user.username);
   User.find().then(function(user) {
     res.render('logout', {
       user: user
@@ -281,6 +282,22 @@ router.get('/:id/snippet/', function(req, res) {
 router.post('/:id/snippet/', function(req, res) {
   res.redirect('/:id/snippet/');
 });
+
+router.post('/searchLang/', function(req, res) {
+  console.log("lang: " + req.body.lang);
+  Snippet.find({user: req.user.username, lang: req.body.lang}).then(function(snippet) {
+    res.render('usersnippet', {snippet: snippet});
+  });
+});
+
+router.post('/searchTag/', function(req, res) {
+  console.log("tag: " + req.body.tag);
+  Snippet.find({user: req.user.username, tags: [req.body.tag]}).then(function(snippet) {
+    res.render('usersnippet', {snippet: snippet});
+  });
+});
+
+
 
 
 module.exports = router;
