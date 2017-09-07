@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Code Snippet Page</title>
+  <link rel="stylesheet" type="text/css" href="stylesheets/styles.css" />
+  <link rel="stylesheet" type="text/css" href="/stylesheets/styles.css" />
+</head>
+<body>
+<div class="nav">
+    <div>
+      {{#snippet}}
+      <a href="/snippet/">{{title}}</a>
+      {{/snippet}}
+      {{^snippet}}
+      <p>No Snippets Saved Currently.</p>
+      <a href="/addsnippet/">Add A Snippet</a>
+      {{/snippet}}
+    </div>
+</div>
+  <br>
+  <p>This site holds and sorts code snippets for the user.</p>
+  <form action="/" method="post" name="mySubmitForm">
+    <button type="submit">Home Page</button>
+  </form>
+  <script type="text/javascript" src="main.js"></script>
+</body>

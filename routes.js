@@ -33,7 +33,9 @@ const Snippet = modelsSnippet.Snippet;
 // const User = models.User;
 const LocalStrategy = require('passport-local').Strategy;
 const mongoURL = 'mongodb://localhost:27017/test';
-mongoose.connect(mongoURL, {useMongoClient: true});
+mongoose.connect(mongoURL, {
+  useMongoClient: true
+});
 mongoose.Promise = require('bluebird');
 const MongoClient = require('mongodb').MongoClient;
 // const validation = require('./test/validation/checkVal.js');
@@ -42,13 +44,13 @@ const MongoClient = require('mongodb').MongoClient;
 
 
 // middleware
-router.use(function(req,res,next){
-// console.log("Middleware");
-next();
+router.use(function(req, res, next) {
+  // console.log("Middleware");
+  next();
 });
 
 // These are the login checks
-const loginRedirect = function (req, res, next) {
+const loginRedirect = function(req, res, next) {
   if (req.user) {
     res.redirect('/');
     return
@@ -56,14 +58,14 @@ const loginRedirect = function (req, res, next) {
     next();
   }
 }
-const requireLogin = function (req, res, next) {
+const requireLogin = function(req, res, next) {
   if (req.user) {
     next()
   } else {
     res.redirect('/login/');
   }
 }
-const checkLogin = function (req, res, next) {
+const checkLogin = function(req, res, next) {
   if (req.sessionID === req.user.sessionID) {
     next()
   } else {
@@ -93,97 +95,97 @@ const checkLogin = function (req, res, next) {
 // }));
 
 passport.use(new LocalStrategy(
-    function(username, password, done) {
-        User.authenticate(username, password, function(err, user) {
-          //HERE, USER is the entire user object
-            if (err) {
-                return done(err)
-            }
-            if (user) {
-                return done(null, user)
-            } else {
-                return done(null, false, {
-                    message: "There is no user with that username and password."
-                })
-            }
+  function(username, password, done) {
+    User.authenticate(username, password, function(err, user) {
+      //HERE, USER is the entire user object
+      if (err) {
+        return done(err)
+      }
+      if (user) {
+        return done(null, user)
+      } else {
+        return done(null, false, {
+          message: "There is no user with that username and password."
         })
-    }
+      }
+    })
+  }
 ));
 
 passport.serializeUser(function(userobj, done) {
   //HERE, USER is the entire user object
-    done(null, userobj.id);//Returns the randomized ID, sends to deserializeUser
+  done(null, userobj.id); //Returns the randomized ID, sends to deserializeUser
 });
 passport.deserializeUser(function(id, done) {
   //Gets the ID from the serializeUser
-    User.findById(id, function(err, userobj) {
-      //finds that user object by its ID
-        done(err, userobj);//FIND OUT WHERE THIS RETURNS TO
-    });
+  User.findById(id, function(err, userobj) {
+    //finds that user object by its ID
+    done(err, userobj); //FIND OUT WHERE THIS RETURNS TO
+  });
 });
 
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
   res.locals.user = req.user;
   next();
 })
 
 
 // GETS and POSTS:
-router.get('/',function(req,res){
+router.get('/', function(req, res) {
   console.log("index for user");
   res.render('index');
 });
 
-router.post('/',function(req,res){
+router.post('/', function(req, res) {
   res.redirect('/');
 });
 
-router.get('/login',function(req,res){
+router.get('/login', function(req, res) {
   console.log("login for user");
   res.render('login');
 });
 
-router.post('/login',function(req,res){
+router.post('/login', function(req, res) {
   res.redirect('/login');
 });
 
-router.get('/register',function(req,res){
+router.get('/register', function(req, res) {
   console.log("register for user");
   res.render('register');
 });
 
-router.post('/register',function(req,res){
+router.post('/register', function(req, res) {
   res.redirect('/register');
 });
 
-router.get('/about',function(req,res){
+router.get('/about', function(req, res) {
   console.log("about for user");
-  User.find().then(function (user){
+  User.find().then(function(user) {
     res.render('about', {user: user});
   });
 });
 
-router.post('/about',function(req,res){
+router.post('/about', function(req, res) {
   res.redirect('/about');
 });
 
 // This runs when the user registers.
-router.post('/submit_registration/',function(req,res){
+router.post('/submit_registration/', function(req, res) {
   console.log("submit_registration");
   // Validation:
-    req.checkBody('username', 'Username must be alphanumeric').isAlphanumeric();
-    req.checkBody('username', 'Username is required').notEmpty();
-    req.checkBody('password', 'Password is required').notEmpty();
-    req.checkBody('password2', 'Type Password Again').notEmpty();
-    req.checkBody('email', 'Email is required').notEmpty();
-    req.checkBody('email', 'Invalid Email').isEmail();
-    req.checkBody('password', 'Passwords do not match').equals(req.body.password2);
+  req.checkBody('username', 'Username must be alphanumeric').isAlphanumeric();
+  req.checkBody('username', 'Username is required').notEmpty();
+  req.checkBody('password', 'Password is required').notEmpty();
+  req.checkBody('password2', 'Type Password Again').notEmpty();
+  req.checkBody('email', 'Email is required').notEmpty();
+  req.checkBody('email', 'Invalid Email').isEmail();
+  req.checkBody('password', 'Passwords do not match').equals(req.body.password2);
   console.log(req.body);
   // Adds user to database.
-  User.create(req.body).then(function (user){
+  User.create(req.body).then(function(user) {
     // req.flash("success_msg", "You are registered");
     res.redirect('/login');
   });
@@ -192,20 +194,26 @@ router.post('/submit_registration/',function(req,res){
 
 
 router.post('/login_submit',
-  passport.authenticate('local', {successRedirect:'/', failureRedirect:'/users/login',failureFlash: true}),
+  passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/users/login',
+    failureFlash: true
+  }),
   function(req, res) {
-        req.session.username = req.body.username;
-        req.session.password = req.body.password;
-        req.session.email = req.body.email;
-        console.log("new session info added");
-        console.log("Session username: "+ req.session.username);
-        res.redirect('/');
+    req.session.username = req.body.username;
+    req.session.password = req.body.password;
+    req.session.email = req.body.email;
+    console.log("new session info added");
+    console.log("Session username: " + req.session.username);
+    res.redirect('/');
   });
 
 router.get('/logout/', function(req, res) {
   console.log("logout page");
-  User.find().then(function (user){
-    res.render('logout', {user: user});
+  User.find().then(function(user) {
+    res.render('logout', {
+      user: user
+    });
   });
 });
 
@@ -216,21 +224,23 @@ router.post('/logout_submit', function(req, res) {
   res.redirect('/');
 });
 
-router.get('/signup/', loginRedirect,  function(req, res) {
+router.get('/signup/', loginRedirect, function(req, res) {
   res.render('signup');
 });
 
 router.get('/addsnippet/', function(req, res) {
   console.log("add snippet page");
-  User.find().then(function (user){
-    res.render('addsnippet', {user: user});
+  User.find().then(function(user) {
+    res.render('addsnippet', {
+      user: user
+    });
   });
 });
 
 router.post('/add/', function(req, res) {
   console.log(req.body);
   console.log(req.user);
-  console.log("Username: "+ req.user.username);
+  console.log("Username: " + req.user.username);
   req.session.username = req.user.username;
   // Snippet.create(req.body).then(function (snippet){
   //   res.redirect('/');
@@ -242,10 +252,22 @@ router.post('/add/', function(req, res) {
     lang: req.body.lang,
     tags: req.body.tags,
     user: req.user.username
-  }).then(function (snippet){
+  }).then(function(snippet) {
     console.log("Snippet Made.");
   });
   res.redirect('/');
+});
+
+router.get('/usersnippet/', function(req, res) {
+  console.log("user snippet for user");
+  console.log("User: " + req.user.username);
+  Snippet.find({user: req.user.username}).then(function(snippet) {
+    res.render('usersnippet', {snippet: snippet});
+  });
+});
+
+router.post('/usersnippet/', function(req, res) {
+  res.redirect('/usersnippet/');
 });
 
 
