@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const snippetSchema = new Schema({
     title: {
         type: String,
+        lowercase: true,
         required: true
     },
     code: {
@@ -18,15 +19,12 @@ const snippetSchema = new Schema({
         type: String,
         required: true
     },
-    privacy: {
-        type: String,
-        default: true
-    },
     tags: {
         type: Array
     },
     user: {
         type: String,
+        lowercase: true,
         required: true
     }
 },{timestamps: true});
