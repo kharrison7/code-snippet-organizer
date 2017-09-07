@@ -270,5 +270,17 @@ router.post('/usersnippet/', function(req, res) {
   res.redirect('/usersnippet/');
 });
 
+router.get('/:id/snippet/', function(req, res) {
+  console.log("Specific snippet for user with id: " +req.params.id);
+  console.log("User: " + req.user.username);
+  Snippet.findOne({user: req.user.username, _id: req.params.id}).then(function(snippet) {
+    res.render('snippet', {snippet: snippet});
+  });
+});
+
+router.post('/:id/snippet/', function(req, res) {
+  res.redirect('/:id/snippet/');
+});
+
 
 module.exports = router;
